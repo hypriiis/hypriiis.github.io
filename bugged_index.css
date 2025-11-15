@@ -1,0 +1,92 @@
+body {
+    padding:0;
+    margin:0;
+    font-family: comic;
+}
+
+.header {
+    width: 100vw;
+    height: 6vh;
+    text-align: center;
+    background-color: lightgreen;
+    margin: 0;
+}
+.footer {
+    width: 100vw;
+    height: 6vh;
+    text-align: center;
+    background-color: lightgreen;
+}
+.header > * {
+    margin:0;
+    padding: 5px;
+}
+
+.footer > * {
+    margin:0;
+    padding: 5px;
+}
+.content {
+    width:100vw;
+    height:88vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+.text {flex-grow: 1; perspective:500px; justify-items:center; animation: spin forwards 10s infinite linear; transform-style: preserve-3d;}
+.text > h1 {
+    margin-bottom: 0;
+    position: absolute;
+    left: 50%;
+    bottom: 50%;
+    width: 52vh;
+    transform-style: preserve-3d;
+}
+@keyframes spin{
+    from {
+        transform:rotateX(0deg) rotateZ(0deg) rotateY(0deg);
+    }
+    to {
+        transform: rotateX(360deg) rotateZ(360deg) rotateY(360deg);
+    }
+}
+.text > h1:nth-child(1) {
+    transform: translateZ(4px) translate(-50%,50%);
+    color: #ffffff;
+    background-color: rgba(53, 132, 228, 0.9);
+}
+.text > h1:nth-child(2) {
+    transform: translateZ(3px) translate(-50%,50%);
+}
+.text > h1:nth-child(3) {
+    transform: translateZ(2px) translate(-50%,50%);
+}
+.text > h1:nth-child(4) {
+    transform: translateZ(1px) translate(-50%,50%);
+}
+.text > h1:nth-child(5) {
+    transform: translateZ(0px) translate(-50%,50%);
+}
+.text > h1:nth-child(6) {
+    transform: translateZ(-1px) translate(-50%,50%);
+}
+.text > h1:nth-child(7) {
+    transform: translateZ(-2px) translate(-50%,50%);
+}
+.text > h1:nth-child(8) {
+    transform: translateZ(-3px) translate(-50%,50%);
+}
+.text > h1:nth-child(9) {
+    transform: translateZ(-4px) translate(-50%,50%);
+}
+.text > h1:nth-child(10) {
+    transform: translateZ(-5px) translate(-50%,50%);
+}
+.content > a {
+    margin: 0;
+}
+@font-face {
+    font-family: comic;
+    src: url('https://felixoofed.github.io/assets/COMIC.TTF');
+}
