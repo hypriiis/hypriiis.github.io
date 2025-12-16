@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aetheris Games Viewer</title>
+    <style>
+        body { font-family: monospace; margin: 20px; background: #1a1a1a; color: #e0e0e0; }
+        input { width: 500px; padding: 10px; background: #333; color: #fff; border: 1px solid #555; }
+        button { padding: 10px 20px; background: #007acc; color: white; border: none; cursor: pointer; margin-right: 10px; }
+        button:hover { background: #005a99; }
+        pre { background: #222; padding: 20px; border-radius: 8px; max-height: 600px; overflow: auto; 
+              border: 1px solid #444; font-size: 14px; line-height: 1.5; white-space: pre-wrap; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 4px; }
+        .loading { background: #ffaa00; }
+        .success { background: #00aa44; }
+        .error { background: #aa0000; }
+        .copy-btn { background: #28a745; }
+        .copy-btn:hover { background: #218838; }
+    </style>
+</head>
+<body>
+    <h1>Aetheris Games (FROM the API)</h1>
+    <input type="url" id="urlInput" value="https://aetheris.lol/api/game" readonly>
+    <button onclick="fetchJson()">🔄 Refresh Data</button>
+    <button onclick="copyToClipboard()" class="copy-btn">📋 Copy Games</button>
+    <div id="status" class="status">Click Refresh to load & convert game data</div>
+    <pre id="textOutput">Game data will appear here as formatted text...</pre>
+
+    <script>
+        async function fetchJson() {
+            const url = document.getElementById('urlInput').value;
+            const output = document.getElementById('textOutput');
+            const status = document.getElementById('status');
+            
+            status.textContent = 'Loading & converting game data...';
+            status.className = 'status loading';
+            output.textContent = 'Fetching...';
+            
+            try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json' }
+                });
+                
+                if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                
+                const data = await response.json();
+                const textData = jsonToText(data);
+                output.textContent = textData;
+                status.textContent = `✅ Converted ${Object.keys(data).length} fields to text format`;
+                status.className = 'status success';
+            } catch (error) {
+                output.textContent = `❌ Error: ${error.message}\n\nCORS issue? Try proxy or local server`;
+                status.textContent = `❌ Failed: ${error.message}`;
+                status.className = 'status error';
+            }
+        }
+        
+        function jsonToText(obj, indent = 0) {
+            const spaces = '  '.repeat(indent);
+            let text = '';
+            
+            if (obj === null || obj === undefined) return 'null';
+            if (typeof obj === 'string') return `"${obj}"`;
+            if (typeof obj === 'number') return obj.toString();
+            if (typeof obj === 'boolean') return obj.toString();
+            if (Array.isArray(obj)) {
+                if (obj.length === 0) return '[]';
+                text += '[\n';
+                obj.forEach((item, i) => {
+                    text += `${spaces}  ${i}: ${jsonToText(item, indent + 1)}\n`;
+                });
+                text += `${spaces}]`;
+                return text;
+            }
+            
+            for (const [key, value] of Object.entries(obj)) {
+                text += `${spaces}${key}: ${jsonToText(value, indent + 1)}\n`;
+            }
+            return text;
+        }
+        
+        function copyToClipboard() {
+            const text = document.getElementById('textOutput').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const status = document.getElementById('status');
+                status.textContent = '✅ Text copied to clipboard!';
+                status.className = 'status success';
+                setTimeout(() => status.textContent = status.textContent.replace('Text copied', 'Ready'), 2000);
+            });
+        }
+        window.onload = fetchJson;
+    </script>
+</body>
+</html>
